@@ -18,9 +18,9 @@
 - [x] Run seed script and verify data fetching capability from Server Components.
 
 ## Phase 3: Core Layout & Navigation
-- [ ] Build `<Sidebar />` component (Navigation links using Lucide icons).
-- [ ] Build `<Topbar />` component (Global search input skeleton and User Profile avatar).
-- [ ] Integrate both into `app/layout.tsx` using a CSS Grid or Flexbox structure suitable for dashboards.
+- [x] Build `<Sidebar />` component (Navigation links using Lucide icons).
+- [x] Build `<Topbar />` component (Global search input skeleton and User Profile avatar).
+- [x] Integrate both into `app/layout.tsx` using a CSS Grid or Flexbox structure suitable for dashboards.
 
 ## Phase 4: The Overview Dashboard (`app/page.tsx`)
 - [ ] Implement Brutalist Skeletons (`loading.tsx` with `React Suspense`) for the dashboard page.
