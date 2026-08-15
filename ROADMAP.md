@@ -29,11 +29,11 @@
 - [x] Build `<RevenueChart />` using Recharts/Tremor. Ensure tooltips and interactive elements match the Vega Cyan accent color.
 
 ## Phase 5: The Ledger / Data Table (`app/transactions/page.tsx`)
-- [ ] Implement Brutalist Skeletons (`loading.tsx`) for the transactions page.
-- [ ] Build `<DataTable />` component to display the `transactions` table.
-- [ ] Implement Server-Side Pagination (e.g., 10 rows per page).
-- [ ] Add sorting logic to column headers (Amount, Date).
-- [ ] Add a debounced search input to filter transactions by user name or ID.
+- [x] Implement Brutalist Skeletons (`loading.tsx`) for the transactions page.
+- [x] Build `<DataTable />` component to display the `transactions` table.
+- [x] Implement Server-Side Pagination (e.g., 10 rows per page).
+- [x] Add sorting logic to column headers (Amount, Date).
+- [x] Add a debounced search input to filter transactions by user name or ID.
 
 ## Phase 6: Polish & Nattitor Signature Integration
 - [ ] Audit all interactive elements (buttons, rows, cards) to ensure Framer Motion spring physics are applied (`active:scale-95`).
