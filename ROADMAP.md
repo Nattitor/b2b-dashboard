@@ -23,10 +23,10 @@
 - [x] Integrate both into `app/layout.tsx` using a CSS Grid or Flexbox structure suitable for dashboards.
 
 ## Phase 4: The Overview Dashboard (`app/page.tsx`)
-- [ ] Implement Brutalist Skeletons (`loading.tsx` with `React Suspense`) for the dashboard page.
-- [ ] Build `<KpiCard />` component adhering strictly to the `.glass-panel` style and Terminal Green for positive growth.
-- [ ] Fetch aggregated transaction data and populate 3-4 KPI Cards (Total Revenue, Active Users, etc.).
-- [ ] Build `<RevenueChart />` using Recharts/Tremor. Ensure tooltips and interactive elements match the Vega Cyan accent color.
+- [x] Implement Brutalist Skeletons (`loading.tsx` with `React Suspense`) for the dashboard page.
+- [x] Build `<KpiCard />` component adhering strictly to the `.glass-panel` style and Terminal Green for positive growth.
+- [x] Fetch aggregated transaction data and populate 3-4 KPI Cards (Total Revenue, Active Users, etc.).
+- [x] Build `<RevenueChart />` using Recharts/Tremor. Ensure tooltips and interactive elements match the Vega Cyan accent color.
 
 ## Phase 5: The Ledger / Data Table (`app/transactions/page.tsx`)
 - [ ] Implement Brutalist Skeletons (`loading.tsx`) for the transactions page.

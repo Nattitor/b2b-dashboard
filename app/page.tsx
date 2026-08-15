@@ -1,69 +1,171 @@
-import Image from "next/image";
+import { Suspense } from "react";
+import { supabase } from "@/lib/supabase";
+import { KpiCard } from "@/components/dashboard/KpiCard";
+import { RevenueChart } from "@/components/dashboard/RevenueChart";
+import { DollarSign, Users, CreditCard } from "lucide-react";
 
-export default function Home() {
+// Revalidate data every 60 seconds (or 0 for dynamic)
+export const revalidate = 0; 
+
+async function getDashboardData() {
+  // 1. Fetch all successful transactions
+  const { data: transactions, error: txError } = await supabase
+    .from("transactions")
+    .select("amount, created_at")
+    .eq("status", "Success");
+
+  if (txError) throw txError;
+
+  // 2. Fetch all users
+  const { data: users, error: usersError } = await supabase
+    .from("users")
+    .select("created_at, status");
+
+  if (usersError) throw usersError;
+
+  // --- Logic for MoM Calculation ---
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  
+  // Previous month calculation (handling year wrap)
+  const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+  const prevMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+  let currentRevenue = 0;
+  let prevRevenue = 0;
+  
+  let currentTxCount = 0;
+  let prevTxCount = 0;
+
+  // Revenue chart data grouped by MM/YYYY
+  const revenueByMonth: Record<string, number> = {};
+
+  transactions?.forEach((tx) => {
+    const date = new Date(tx.created_at);
+    const m = date.getMonth();
+    const y = date.getFullYear();
+    const amount = Number(tx.amount);
+
+    // Group for chart (last 6 months ideally, but we group all and slice later)
+    const label = `${String(m + 1).padStart(2, "0")}/${y.toString().slice(-2)}`;
+    revenueByMonth[label] = (revenueByMonth[label] || 0) + amount;
+
+    // MoM comparison
+    if (m === currentMonth && y === currentYear) {
+      currentRevenue += amount;
+      currentTxCount++;
+    } else if (m === prevMonth && y === prevMonthYear) {
+      prevRevenue += amount;
+      prevTxCount++;
+    }
+  });
+
+  // Calculate Users
+  let currentUsers = 0;
+  let prevUsers = 0;
+  
+  users?.forEach((user) => {
+    const date = new Date(user.created_at);
+    const m = date.getMonth();
+    const y = date.getFullYear();
+    
+    // We count total users acquired up to that month, but for a simple KPI, 
+    // let's do new users acquired this month vs last month.
+    if (m === currentMonth && y === currentYear) {
+      currentUsers++;
+    } else if (m === prevMonth && y === prevMonthYear) {
+      prevUsers++;
+    }
+  });
+
+  // Calculate percentages
+  const calculateGrowth = (current: number, prev: number) => {
+    if (prev === 0) return current > 0 ? 100 : 0;
+    return ((current - prev) / prev) * 100;
+  };
+
+  const revenueGrowth = calculateGrowth(currentRevenue, prevRevenue);
+  const userGrowth = calculateGrowth(currentUsers, prevUsers);
+  const txGrowth = calculateGrowth(currentTxCount, prevTxCount);
+
+  // Format Chart Data
+  // Sort chronologically
+  const sortedLabels = Object.keys(revenueByMonth).sort((a, b) => {
+    const [m1, y1] = a.split("/");
+    const [m2, y2] = b.split("/");
+    return new Date(2000 + Number(y1), Number(m1) - 1).getTime() - new Date(2000 + Number(y2), Number(m2) - 1).getTime();
+  });
+
+  // Get last 6-12 months for chart
+  const chartData = sortedLabels.slice(-8).map((label) => ({
+    date: label,
+    revenue: revenueByMonth[label],
+  }));
+
+  // Total active users right now
+  const totalActiveUsers = users?.filter(u => u.status === 'Active').length || 0;
+
+  return {
+    kpis: {
+      revenue: {
+        value: `$${currentRevenue.toLocaleString("en-US", { minimumFractionDigits: 2 })}`,
+        growth: revenueGrowth,
+      },
+      users: {
+        value: totalActiveUsers.toString(),
+        growth: userGrowth, // Growth based on new acquisitions
+      },
+      transactions: {
+        value: currentTxCount.toString(),
+        growth: txGrowth,
+      }
+    },
+    chartData,
+  };
+}
+
+export default async function DashboardPage() {
+  const { kpis, chartData } = await getDashboardData();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="flex flex-col gap-6 p-6 sm:p-8">
+      {/* Header */}
+      <div>
+        <h1 className="font-space-grotesk text-3xl font-bold tracking-tight text-white uppercase">
+          Overview
+        </h1>
+        <p className="text-zinc-400 mt-1">
+          High-level metrics and financial performance.
+        </p>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <KpiCard
+          title="MRR (Current Month)"
+          value={kpis.revenue.value}
+          growth={kpis.revenue.growth}
+          icon={<DollarSign className="h-5 w-5" />}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        <KpiCard
+          title="Active Users"
+          value={kpis.users.value}
+          growth={kpis.users.growth}
+          icon={<Users className="h-5 w-5" />}
+        />
+        <KpiCard
+          title="Successful Transactions"
+          value={kpis.transactions.value}
+          growth={kpis.transactions.growth}
+          icon={<CreditCard className="h-5 w-5" />}
+        />
+      </div>
+
+      {/* Revenue Chart */}
+      <div className="mt-4">
+        <RevenueChart data={chartData} />
+      </div>
     </div>
   );
 }
