@@ -99,13 +99,13 @@ export function DataTable({ data, totalCount, pageSize }: DataTableProps) {
       </div>
 
       {/* Table Content */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-zinc-400">
+      <div className="w-full overflow-x-auto">
+        <table className="w-full text-left text-sm text-zinc-400 min-w-[800px]">
           <thead className="text-xs uppercase bg-white/[0.02] border-b border-white/10">
             <tr>
-              <th className="px-6 py-4 font-medium text-white">Transaction ID</th>
-              <th className="px-6 py-4 font-medium text-white">User</th>
-              <th className="px-6 py-0 font-medium text-white select-none">
+              <th className="px-3 md:px-6 py-4 font-medium text-white">Transaction ID</th>
+              <th className="px-3 md:px-6 py-4 font-medium text-white">User</th>
+              <th className="px-3 md:px-6 py-0 font-medium text-white select-none">
                 <motion.button 
                   whileTap={{ scale: 0.95 }}
                   transition={spring}
@@ -116,8 +116,8 @@ export function DataTable({ data, totalCount, pageSize }: DataTableProps) {
                   <ArrowUpDown className="h-3 w-3 text-zinc-500 md:group-hover:text-[#00E5FF] transition-colors" />
                 </motion.button>
               </th>
-              <th className="px-6 py-4 font-medium text-white">Status</th>
-              <th className="px-6 py-0 font-medium text-white select-none">
+              <th className="px-3 md:px-6 py-4 font-medium text-white">Status</th>
+              <th className="px-3 md:px-6 py-0 font-medium text-white select-none">
                 <motion.button 
                   whileTap={{ scale: 0.95 }}
                   transition={spring}
@@ -138,7 +138,7 @@ export function DataTable({ data, totalCount, pageSize }: DataTableProps) {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <td colSpan={5} className="px-6 py-8 text-center text-zinc-500">
+                  <td colSpan={5} className="px-3 md:px-6 py-8 text-center text-zinc-500">
                     No transactions found.
                   </td>
                 </motion.tr>
@@ -153,17 +153,17 @@ export function DataTable({ data, totalCount, pageSize }: DataTableProps) {
                     transition={spring}
                     className="md:hover:bg-white/[0.02] transition-colors"
                   >
-                    <td className="px-6 py-4 font-jetbrains-mono text-xs tracking-tight text-zinc-300">
+                    <td className="px-3 md:px-6 py-4 font-jetbrains-mono text-xs tracking-tight text-zinc-300">
                       {tx.id.split("-")[0]}...
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 md:px-6 py-4">
                       <div className="font-medium text-white">{tx.users?.name || "Unknown"}</div>
                       <div className="text-xs text-zinc-500">{tx.users?.email}</div>
                     </td>
-                    <td className="px-6 py-4 font-jetbrains-mono font-bold text-white">
+                    <td className="px-3 md:px-6 py-4 font-jetbrains-mono font-bold text-white">
                       ${tx.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 md:px-6 py-4">
                       <span 
                         className={cn(
                           "px-2.5 py-1 rounded-full text-xs font-medium font-jetbrains-mono border",
@@ -175,7 +175,7 @@ export function DataTable({ data, totalCount, pageSize }: DataTableProps) {
                         {tx.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-jetbrains-mono text-xs text-zinc-400">
+                    <td className="px-3 md:px-6 py-4 font-jetbrains-mono text-xs text-zinc-400">
                       {new Date(tx.created_at).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",
@@ -191,8 +191,8 @@ export function DataTable({ data, totalCount, pageSize }: DataTableProps) {
       </div>
 
       {/* Pagination Footer */}
-      <div className="flex items-center justify-between p-4 border-t border-white/10 bg-white/[0.02]">
-        <div className="text-sm text-zinc-500 font-jetbrains-mono">
+      <div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-between p-4 border-t border-white/10 bg-white/[0.02]">
+        <div className="text-sm text-zinc-500 font-jetbrains-mono text-center sm:text-left">
           Showing <span className="text-white">{data.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}</span> to{" "}
           <span className="text-white">{Math.min(currentPage * pageSize, totalCount)}</span> of{" "}
           <span className="text-white">{totalCount}</span> results

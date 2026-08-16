@@ -1,18 +1,29 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Search, Bell, User, LogOut } from "lucide-react";
+import { Search, Bell, User, LogOut, LayoutDashboard, ArrowRightLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 const spring = { type: "spring", stiffness: 350, damping: 25, mass: 0.5 };
 
+const navItems = [
+  { name: "Overview", href: "/", icon: LayoutDashboard },
+  { name: "Transactions", href: "/transactions", icon: ArrowRightLeft },
+];
+
 export function Topbar() {
+  const pathname = usePathname();
   const [showToast, setShowToast] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [showMobileNav, setShowMobileNav] = useState(false);
   
   const toastRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const mobileNavRef = useRef<HTMLDivElement>(null);
 
   // Auto-hide toast after 3 seconds
   useEffect(() => {
@@ -25,9 +36,65 @@ export function Topbar() {
   // Click outside handlers
   useOnClickOutside(toastRef, () => setShowToast(false));
   useOnClickOutside(menuRef, () => setShowMenu(false));
+  useOnClickOutside(mobileNavRef, () => setShowMobileNav(false));
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 glass-panel border-b border-white/10 bg-[#0A0E17]/80 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 glass-panel border-b border-white/10 bg-[#0A0E17]/80 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 relative">
+      {/* Mobile Hamburger (visible only on small screens) */}
+      <div ref={mobileNavRef} className="md:hidden">
+        <button
+          type="button"
+          onClick={() => setShowMobileNav((prev) => !prev)}
+          className="-m-2.5 p-2.5 text-zinc-400 transition-colors active:scale-95 outline-none"
+        >
+          <span className="sr-only">Open sidebar</span>
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+
+        <AnimatePresence>
+          {showMobileNav && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={spring}
+              className="absolute left-0 top-full mt-0 w-full px-4 pb-4 pt-2 z-50 bg-[#0A0E17] border-b border-white/10 shadow-2xl"
+            >
+              <div className="flex flex-col gap-1">
+                {navItems.map((item) => {
+                  const isActive = pathname === item.href;
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setShowMobileNav(false)}
+                      className={cn(
+                        "flex items-center gap-x-3 rounded-lg px-3 py-3 text-sm font-medium transition-all active:scale-95",
+                        isActive
+                          ? "bg-white/5 text-[#00E5FF]"
+                          : "text-zinc-400 hover:text-white"
+                      )}
+                    >
+                      <Icon
+                        className={cn(
+                          "h-5 w-5 shrink-0 transition-colors",
+                          isActive ? "text-[#00E5FF]" : "text-zinc-500"
+                        )}
+                        aria-hidden="true"
+                      />
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
       <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
         <form className="relative flex flex-1" action="#" method="GET">
           <label htmlFor="search-field" className="sr-only">

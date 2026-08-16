@@ -37,7 +37,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export function RevenueChart({ data }: RevenueChartProps) {
   return (
-    <div className="glass-panel p-6 flex flex-col gap-y-6 w-full h-[400px]">
+    <div 
+      className="glass-panel p-4 md:p-6 flex flex-col gap-y-4 md:gap-y-6 w-full h-[300px] md:h-[400px]"
+      style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
+    >
       <div>
         <h3 className="font-space-grotesk text-xl font-bold tracking-tight text-white uppercase">
           Revenue Trend

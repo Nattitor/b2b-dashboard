@@ -52,11 +52,16 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-[#0A0E17] text-white">
-        <Sidebar />
-        <div className="pl-64 flex flex-col min-h-screen">
+      <body className="min-h-full flex flex-col font-sans bg-[#0A0E17] text-white overflow-x-hidden">
+        {/* Desktop Sidebar */}
+        <div className="hidden md:flex">
+          <Sidebar />
+        </div>
+        
+        {/* Main Content Area */}
+        <div className="md:pl-64 flex flex-col min-h-screen w-full">
           <Topbar />
-          <main className="flex-1">
+          <main className="flex-1 w-full max-w-full overflow-x-hidden">
             {children}
           </main>
         </div>

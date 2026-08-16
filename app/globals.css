@@ -11,6 +11,13 @@
   color-scheme: dark;
 }
 
+/* Fix nasty browser focus ring on Recharts when tapped on mobile */
+.recharts-wrapper:focus,
+.recharts-wrapper *:focus,
+.recharts-surface:focus {
+  outline: none !important;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

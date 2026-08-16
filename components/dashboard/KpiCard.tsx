@@ -23,7 +23,7 @@ export function KpiCard({ title, value, growth, icon }: KpiCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={spring}
-      className="glass-panel p-6 flex flex-col gap-y-4 relative overflow-hidden group"
+      className="glass-panel p-4 md:p-6 flex flex-col gap-y-4 relative overflow-hidden group"
     >
       {/* Subtle hover glow effect */}
       <div className="absolute inset-0 bg-gradient-to-tr from-[#0A0E17]/50 to-white/[0.02] opacity-0 md:group-hover:opacity-100 transition-opacity duration-500" />
