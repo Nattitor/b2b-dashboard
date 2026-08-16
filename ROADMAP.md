@@ -41,6 +41,6 @@
 - [x] Final visual QA against `CODESTYLE.md` requirements.
 
 ## Phase 7: Deployment Optimization
-- [ ] Ensure `metadataBase` and core SEO tags are defined in `layout.tsx`.
-- [ ] Verify there are no Hydration Mismatches or `console.error`s.
-- [ ] Final `npm run build` test to guarantee Vercel deployment success.
+- [x] Ensure `metadataBase` and core SEO tags are defined in `layout.tsx`.
+- [x] Implement `robots.txt` and `sitemap.ts` (Next.js App Router).
+- [x] Final cleanup: Remove unused imports and check terminal for Next.js build warnings.

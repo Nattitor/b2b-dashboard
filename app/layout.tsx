@@ -18,8 +18,25 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "B2B Metrics Dashboard | Nattitor",
-  description: "A high-performance B2B Analytics Dashboard engineered to visualize complex business metrics.",
+  metadataBase: new URL('https://nattitor-dashboard.vercel.app'),
+  title: {
+    template: 'Nattitor B2B | %s',
+    default: 'Nattitor B2B | Dashboard',
+  },
+  description: 'High-performance B2B Dashboard portfolio demonstration engineered with Next.js 15 (App Router), React Server Components, Supabase, and Tailwind CSS.',
+  openGraph: {
+    title: 'Nattitor B2B | Dashboard',
+    description: 'High-performance B2B Dashboard portfolio demonstration engineered with Next.js 15 (App Router), React Server Components, Supabase, and Tailwind CSS.',
+    url: 'https://nattitor-dashboard.vercel.app',
+    siteName: 'Nattitor',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nattitor B2B | Dashboard',
+    description: 'High-performance B2B Dashboard portfolio demonstration engineered with Next.js 15, Supabase, and Tailwind CSS.',
+  }
 };
 
 import { Sidebar } from "@/components/layout/Sidebar";
