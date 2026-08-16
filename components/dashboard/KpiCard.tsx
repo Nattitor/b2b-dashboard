@@ -12,7 +12,7 @@ interface KpiCardProps {
   icon?: ReactNode;
 }
 
-const spring = { type: "spring", stiffness: 350, damping: 25, mass: 0.5 };
+const spring = { type: "spring" as const, stiffness: 350, damping: 25, mass: 0.5 };
 
 export function KpiCard({ title, value, growth, icon }: KpiCardProps) {
   const isPositive = growth >= 0;

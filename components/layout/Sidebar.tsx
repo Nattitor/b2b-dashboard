@@ -12,7 +12,7 @@ const navItems = [
   { name: "Transactions", href: "/transactions", icon: ArrowRightLeft },
 ];
 
-const spring = { type: "spring", stiffness: 350, damping: 25, mass: 0.5 };
+const spring = { type: "spring" as const, stiffness: 350, damping: 25, mass: 0.5 };
 
 export function Sidebar() {
   const pathname = usePathname();

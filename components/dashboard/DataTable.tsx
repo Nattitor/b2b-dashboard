@@ -24,7 +24,7 @@ interface DataTableProps {
   pageSize: number;
 }
 
-const spring = { type: "spring", stiffness: 350, damping: 25, mass: 0.5 };
+const spring = { type: "spring" as const, stiffness: 350, damping: 25, mass: 0.5 };
 
 export function DataTable({ data, totalCount, pageSize }: DataTableProps) {
   const router = useRouter();

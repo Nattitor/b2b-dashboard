@@ -8,7 +8,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const spring = { type: "spring", stiffness: 350, damping: 25, mass: 0.5 };
+const spring = { type: "spring" as const, stiffness: 350, damping: 25, mass: 0.5 };
 
 const navItems = [
   { name: "Overview", href: "/", icon: LayoutDashboard },
