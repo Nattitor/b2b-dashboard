@@ -36,9 +36,9 @@
 - [x] Add a debounced search input to filter transactions by user name or ID.
 
 ## Phase 6: Polish & Nattitor Signature Integration
-- [ ] Audit all interactive elements (buttons, rows, cards) to ensure Framer Motion spring physics are applied (`active:scale-95`).
-- [ ] Remove all native hover effects on mobile devices (`md:hover:` restriction).
-- [ ] Final visual QA against `CODESTYLE.md` requirements.
+- [x] Audit all interactive elements (buttons, rows, cards) to ensure Framer Motion spring physics are applied (`active:scale-95`).
+- [x] Remove all native hover effects on mobile devices (`md:hover:` restriction).
+- [x] Final visual QA against `CODESTYLE.md` requirements.
 
 ## Phase 7: Deployment Optimization
 - [ ] Ensure `metadataBase` and core SEO tags are defined in `layout.tsx`.

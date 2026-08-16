@@ -1,6 +1,31 @@
-import { Search, Bell, User } from "lucide-react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { Search, Bell, User, LogOut } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useOnClickOutside } from "@/hooks/useOnClickOutside";
+
+const spring = { type: "spring", stiffness: 350, damping: 25, mass: 0.5 };
 
 export function Topbar() {
+  const [showToast, setShowToast] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  
+  const toastRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Auto-hide toast after 3 seconds
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => setShowToast(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
+  // Click outside handlers
+  useOnClickOutside(toastRef, () => setShowToast(false));
+  useOnClickOutside(menuRef, () => setShowMenu(false));
+
   return (
     <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 glass-panel border-b border-white/10 bg-[#0A0E17]/80 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
       <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
@@ -21,34 +46,84 @@ export function Topbar() {
             disabled
           />
         </form>
-        <div className="flex items-center gap-x-4 lg:gap-x-6">
-          <button
-            type="button"
-            className="-m-2.5 p-2.5 text-zinc-400 md:hover:text-white transition-colors active:scale-95"
-          >
-            <span className="sr-only">View notifications</span>
-            <Bell className="h-5 w-5" aria-hidden="true" />
-          </button>
+        
+        <div className="flex items-center gap-x-4 lg:gap-x-6 relative">
+          
+          {/* Notifications */}
+          <div className="relative" ref={toastRef}>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              transition={spring}
+              type="button"
+              onClick={() => setShowToast((prev) => !prev)}
+              className="-m-2.5 p-2.5 text-zinc-400 md:hover:text-white transition-colors outline-none"
+            >
+              <span className="sr-only">View notifications</span>
+              <Bell className="h-5 w-5" aria-hidden="true" />
+            </motion.button>
+
+            <AnimatePresence>
+              {showToast && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={spring}
+                  className="absolute right-0 top-full mt-2 w-48 rounded-md bg-[#0A0E17] border border-white/10 shadow-lg py-2 px-3 z-50 glass-panel"
+                >
+                  <p className="text-xs font-medium text-zinc-300 text-center font-jetbrains-mono">
+                    No new notifications
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* Separator */}
           <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-white/10" aria-hidden="true" />
 
-          {/* Profile dropdown skeleton */}
-          <div className="relative">
-            <button
+          {/* Profile dropdown */}
+          <div className="relative" ref={menuRef}>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              transition={spring}
               type="button"
-              className="-m-1.5 flex items-center p-1.5 active:scale-95 transition-transform"
+              onClick={() => setShowMenu((prev) => !prev)}
+              className="-m-1.5 flex items-center p-1.5 outline-none group"
             >
               <span className="sr-only">Open user menu</span>
-              <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center border border-white/10">
-                <User className="h-4 w-4 text-zinc-400" />
+              <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center border border-white/10 md:group-hover:border-[#00E5FF]/50 transition-colors">
+                <User className="h-4 w-4 text-zinc-400 md:group-hover:text-white transition-colors" />
               </div>
               <span className="hidden lg:flex lg:items-center">
                 <span className="ml-4 text-sm font-semibold leading-6 text-white" aria-hidden="true">
                   Admin
                 </span>
               </span>
-            </button>
+            </motion.button>
+
+            <AnimatePresence>
+              {showMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={spring}
+                  className="absolute right-0 top-full mt-2 w-48 rounded-md bg-[#0A0E17] border border-white/10 shadow-lg py-1 z-50 glass-panel overflow-hidden"
+                >
+                  <button
+                    onClick={() => {
+                      setShowMenu(false);
+                      // In a real app: signOut()
+                    }}
+                    className="flex w-full items-center gap-x-2 px-4 py-2 text-sm text-zinc-300 md:hover:bg-white/5 md:hover:text-white transition-colors text-left"
+                  >
+                    <LogOut className="h-4 w-4 text-zinc-500" />
+                    Log out
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>

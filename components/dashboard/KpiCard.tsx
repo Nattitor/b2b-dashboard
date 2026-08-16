@@ -1,6 +1,9 @@
+"use client";
+
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { TrendingUp, TrendingDown } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface KpiCardProps {
   title: string;
@@ -9,13 +12,21 @@ interface KpiCardProps {
   icon?: ReactNode;
 }
 
+const spring = { type: "spring", stiffness: 350, damping: 25, mass: 0.5 };
+
 export function KpiCard({ title, value, growth, icon }: KpiCardProps) {
   const isPositive = growth >= 0;
   
   return (
-    <div className="glass-panel p-6 flex flex-col gap-y-4 relative overflow-hidden group">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={spring}
+      className="glass-panel p-6 flex flex-col gap-y-4 relative overflow-hidden group"
+    >
       {/* Subtle hover glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-[#0A0E17]/50 to-white/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-[#0A0E17]/50 to-white/[0.02] opacity-0 md:group-hover:opacity-100 transition-opacity duration-500" />
       
       <div className="flex items-center justify-between z-10">
         <h3 className="text-sm font-medium text-zinc-400">{title}</h3>
@@ -43,6 +54,6 @@ export function KpiCard({ title, value, growth, icon }: KpiCardProps) {
           <span>{Math.abs(growth).toFixed(1)}%</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
