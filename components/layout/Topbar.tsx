@@ -1,199 +1,97 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Search, Bell, User, LogOut, LayoutDashboard, ArrowRightLeft } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-
-const spring = { type: "spring" as const, stiffness: 350, damping: 25, mass: 0.5 };
+import { Brand } from "@/components/brand/Brand";
 
 const navItems = [
-  { name: "Overview", href: "/", icon: LayoutDashboard },
-  { name: "Transactions", href: "/transactions", icon: ArrowRightLeft },
+  { name: "Overview", href: "/" },
+  { name: "Transactions", href: "/transactions" },
 ];
 
 export function Topbar() {
   const pathname = usePathname();
-  const [showToast, setShowToast] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const [showMobileNav, setShowMobileNav] = useState(false);
-  
-  const toastRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const mobileNavRef = useRef<HTMLDivElement>(null);
-
-  // Auto-hide toast after 3 seconds
-  useEffect(() => {
-    if (showToast) {
-      const timer = setTimeout(() => setShowToast(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [showToast]);
-
-  // Click outside handlers
-  useOnClickOutside(toastRef, () => setShowToast(false));
-  useOnClickOutside(menuRef, () => setShowMenu(false));
-  useOnClickOutside(mobileNavRef, () => setShowMobileNav(false));
+  const pageTitle = pathname === "/transactions" ? "Transactions" : "Overview";
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 glass-panel border-b border-white/10 bg-[#0A0E17]/80 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8 relative">
-      {/* Mobile Hamburger (visible only on small screens) */}
-      <div ref={mobileNavRef} className="md:hidden">
-        <button
-          type="button"
-          onClick={() => setShowMobileNav((prev) => !prev)}
-          className="-m-2.5 p-2.5 text-zinc-400 transition-colors active:scale-95 outline-none"
+    <header className="sticky top-0 z-40 flex min-h-28 shrink-0 flex-col md:h-20 md:min-h-20 border-b border-[#24303b] bg-[#0b1017] px-4 sm:px-6 lg:px-8">
+      <div className="flex min-h-16 flex-1 items-center gap-4">
+        <Link
+          href="/"
+          aria-label="Nattitor overview"
+          className="shrink-0 md:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#58e0ce]"
         >
-          <span className="sr-only">Open sidebar</span>
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          </svg>
-        </button>
+          <Brand compact />
+        </Link>
 
-        <AnimatePresence>
-          {showMobileNav && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={spring}
-              className="absolute left-0 top-full mt-0 w-full px-4 pb-4 pt-2 z-50 bg-[#0A0E17] border-b border-white/10 shadow-2xl"
-            >
-              <div className="flex flex-col gap-1">
-                {navItems.map((item) => {
-                  const isActive = pathname === item.href;
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setShowMobileNav(false)}
-                      className={cn(
-                        "flex items-center gap-x-3 rounded-lg px-3 py-3 text-sm font-medium transition-all active:scale-95",
-                        isActive
-                          ? "bg-white/5 text-[#00E5FF]"
-                          : "text-zinc-400 hover:text-white"
-                      )}
-                    >
-                      <Icon
-                        className={cn(
-                          "h-5 w-5 shrink-0 transition-colors",
-                          isActive ? "text-[#00E5FF]" : "text-zinc-500"
-                        )}
-                        aria-hidden="true"
-                      />
-                      {item.name}
-                    </Link>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+        <nav
+          aria-label="Breadcrumb"
+          className="hidden min-w-0 flex-1 items-center gap-2 text-sm md:flex"
+        >
+          <Link
+            href="/"
+            className="text-slate-400 transition-colors hover:text-slate-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#58e0ce]"
+          >
+            Workspace
+          </Link>
+          <span className="text-slate-600" aria-hidden="true">
+            /
+          </span>
+          <span
+            className="truncate font-medium text-slate-200"
+            aria-current="page"
+          >
+            {pageTitle}
+          </span>
+        </nav>
 
-      <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-        <form className="relative flex flex-1" action="#" method="GET">
-          <label htmlFor="search-field" className="sr-only">
-            Search
+        <form
+          className="relative ml-auto flex w-full min-w-0 max-w-[34rem] flex-1 md:ml-0"
+          action="/transactions"
+          method="GET"
+          role="search"
+        >
+          <label htmlFor="global-search" className="sr-only">
+            Search transactions
           </label>
           <Search
-            className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-zinc-500"
+            className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
             aria-hidden="true"
           />
           <input
-            id="search-field"
-            className="block h-full w-full border-0 bg-transparent py-0 pl-8 pr-0 text-white placeholder:text-zinc-500 focus:ring-0 sm:text-sm"
-            placeholder="Search transactions..."
+            id="global-search"
+            className="h-11 w-full min-w-0 rounded-lg border border-[#24303b] bg-[#111923] pl-10 pr-3 text-sm text-slate-100 placeholder:text-slate-400 focus:border-[#58e0ce]/60 focus:outline focus:outline-2 focus:outline-offset-1 focus:outline-[#58e0ce]"
+            placeholder="Search transactions"
             type="search"
-            name="search"
-            disabled
+            name="q"
+            maxLength={100}
           />
         </form>
-        
-        <div className="flex items-center gap-x-4 lg:gap-x-6 relative">
-          
-          {/* Notifications */}
-          <div className="relative" ref={toastRef}>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              transition={spring}
-              type="button"
-              onClick={() => setShowToast((prev) => !prev)}
-              className="-m-2.5 p-2.5 text-zinc-400 md:hover:text-white transition-colors outline-none"
-            >
-              <span className="sr-only">View notifications</span>
-              <Bell className="h-5 w-5" aria-hidden="true" />
-            </motion.button>
-
-            <AnimatePresence>
-              {showToast && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={spring}
-                  className="absolute right-0 top-full mt-2 w-48 rounded-md bg-[#0A0E17] border border-white/10 shadow-lg py-2 px-3 z-50 glass-panel"
-                >
-                  <p className="text-xs font-medium text-zinc-300 text-center font-jetbrains-mono">
-                    No new notifications
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Separator */}
-          <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-white/10" aria-hidden="true" />
-
-          {/* Profile dropdown */}
-          <div className="relative" ref={menuRef}>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              transition={spring}
-              type="button"
-              onClick={() => setShowMenu((prev) => !prev)}
-              className="-m-1.5 flex items-center p-1.5 outline-none group"
-            >
-              <span className="sr-only">Open user menu</span>
-              <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center border border-white/10 md:group-hover:border-[#00E5FF]/50 transition-colors">
-                <User className="h-4 w-4 text-zinc-400 md:group-hover:text-white transition-colors" />
-              </div>
-              <span className="hidden lg:flex lg:items-center">
-                <span className="ml-4 text-sm font-semibold leading-6 text-white" aria-hidden="true">
-                  Admin
-                </span>
-              </span>
-            </motion.button>
-
-            <AnimatePresence>
-              {showMenu && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={spring}
-                  className="absolute right-0 top-full mt-2 w-48 rounded-md bg-[#0A0E17] border border-white/10 shadow-lg py-1 z-50 glass-panel overflow-hidden"
-                >
-                  <button
-                    onClick={() => {
-                      setShowMenu(false);
-                      // In a real app: signOut()
-                    }}
-                    className="flex w-full items-center gap-x-2 px-4 py-2 text-sm text-zinc-300 md:hover:bg-white/5 md:hover:text-white transition-colors text-left"
-                  >
-                    <LogOut className="h-4 w-4 text-zinc-500" />
-                    Log out
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
       </div>
+
+      <nav
+        aria-label="Mobile navigation"
+        className="grid grid-cols-2 gap-2 pb-2 md:hidden"
+      >
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              aria-current={isActive ? "page" : undefined}
+              className={`flex min-h-11 items-center justify-center rounded-lg border px-3 text-sm font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#58e0ce] ${
+                isActive
+                  ? "border-[#58e0ce]/25 bg-[#58e0ce]/10 text-[#58e0ce]"
+                  : "border-transparent text-slate-400 hover:bg-[#111923] hover:text-slate-100"
+              }`}
+            >
+              {item.name}
+            </Link>
+          );
+        })}
+      </nav>
     </header>
   );
 }

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+<title id="title">Nattitor Operations · Business in focus</title><desc id="desc">Brand cover for a revenue and collections dashboard, with an ascending geometric N and a teal revenue line on navy.</desc>
+<rect width="1200" height="630" fill="#0b1017"/><path d="M700 0V630M900 0V630M1100 0V630M600 130H1200M600 315H1200M600 500H1200" stroke="#1b2a35"/>
+<rect x="84" y="102" width="76" height="76" rx="18" fill="#111923" stroke="#30444c"/><path d="M105 157V123L139 157V123" fill="none" stroke="#58e0ce" stroke-width="6"/><path d="M105 147L122 130" stroke="#58e0ce" stroke-width="2"/>
+<text x="184" y="139" font-family="system-ui,sans-serif" font-size="28" font-weight="650" letter-spacing="5" fill="#edf2f7">NATTITOR</text><text x="186" y="166" font-family="system-ui,sans-serif" font-size="12" letter-spacing="4" fill="#a1b2c4">OPERATIONS</text>
+<text x="84" y="300" font-family="system-ui,sans-serif" font-size="64" font-weight="600" letter-spacing="-3" fill="#f0f4f8">Your business,</text><text x="84" y="378" font-family="system-ui,sans-serif" font-size="64" font-weight="600" letter-spacing="-3" fill="#58e0ce">in focus.</text>
+<text x="87" y="438" font-family="system-ui,sans-serif" font-size="20" fill="#a1b2c4">Revenue. Customers. Collections.</text>
+<path d="M672 447L738 402L798 425L864 321L930 351L996 237L1090 177" fill="none" stroke="#58e0ce" stroke-width="4" stroke-linejoin="round"/><circle cx="1090" cy="177" r="7" fill="#58e0ce"/>
+<path d="M84 532H1116" stroke="#24303b"/><text x="86" y="568" font-family="system-ui,sans-serif" font-size="12" letter-spacing="3" fill="#a1b2c4">B2B WORKSPACE / PORTFOLIO DEMO</text><text x="1116" y="568" text-anchor="end" font-family="system-ui,sans-serif" font-size="12" fill="#a1b2c4">FREDDY GUERRA</text>
+</svg>

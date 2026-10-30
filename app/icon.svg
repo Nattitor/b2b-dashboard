@@ -1,13 +1,1 @@
-<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-  <!-- Dark Brutalist Background -->
-  <rect width="512" height="512" rx="112" fill="#0A0E17" stroke="#ffffff" stroke-width="8" stroke-opacity="0.1"/>
-  
-  <!-- Bar 1 -->
-  <rect x="128" y="288" width="64" height="104" rx="16" fill="#ffffff" fill-opacity="0.5"/>
-  
-  <!-- Bar 2 -->
-  <rect x="224" y="208" width="64" height="184" rx="16" fill="#ffffff" fill-opacity="0.8"/>
-  
-  <!-- Bar 3 (Terminal Green Growth) -->
-  <rect x="320" y="120" width="64" height="272" rx="16" fill="#10B981"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><rect x="1" y="1" width="62" height="62" rx="15" fill="#111923" stroke="#24303b" stroke-width="2"/><path d="M18 46V18L46 46V18" fill="none" stroke="#58e0ce" stroke-width="5" stroke-linecap="square"/><path d="M18 37.5 32.5 23" fill="none" stroke="#58e0ce" stroke-width="2" opacity=".72"/></svg>

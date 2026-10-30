@@ -1,9 +1,41 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  // Allow the local network IP to fetch chunks without being blocked by Next.js 15 CORS/Host checks
-  // @ts-ignore - bypassing strict types just in case it's placed under experimental in future versions
-  allowedDevOrigins: ['192.168.1.45'],
-};
+const isDevelopment = process.env.NODE_ENV === "development";
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDevelopment ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self'",
+  `connect-src 'self'${isDevelopment ? " ws://127.0.0.1:* ws://localhost:*" : ""}`,
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
 
+const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  outputFileTracingExcludes: {
+    "/*": ["./.data/**/*", "./.env*"],
+  },
+  images: { unoptimized: true },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "Content-Security-Policy", value: contentSecurityPolicy },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+        ],
+      },
+    ];
+  },
+};
 export default nextConfig;

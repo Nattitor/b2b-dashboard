@@ -1,18 +1,11 @@
-import type { MetadataRoute } from 'next'
- 
+import type { MetadataRoute } from "next";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
+    { url: "https://nattitor-dashboard.vercel.app", priority: 1 },
     {
-      url: 'https://nattitor-dashboard.vercel.app',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: 'https://nattitor-dashboard.vercel.app/transactions',
-      lastModified: new Date(),
-      changeFrequency: 'hourly',
+      url: "https://nattitor-dashboard.vercel.app/transactions",
       priority: 0.8,
     },
-  ]
+  ];
 }

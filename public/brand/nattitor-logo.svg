@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="120" viewBox="0 0 480 120" role="img" aria-labelledby="title desc">
+  <title id="title">Nattitor Operations</title>
+  <desc id="desc">Nattitor geometric N mark and operations wordmark.</desc>
+  <rect x="1" y="1" width="118" height="118" rx="26" fill="#111923" stroke="#24303b" stroke-width="2"/>
+  <path d="M32 88V32L88 88V32" fill="none" stroke="#58e0ce" stroke-width="9" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M32 71 61 42" fill="none" stroke="#58e0ce" stroke-width="3" stroke-linecap="square" opacity=".72"/>
+  <text x="148" y="67" fill="#e2e8f0" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="37" font-weight="650" letter-spacing="7">NATTITOR</text>
+  <text x="151" y="95" fill="#64748b" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="15" font-weight="600" letter-spacing="5">OPERATIONS</text>
+</svg>

@@ -1,88 +1,63 @@
-import { Suspense } from "react";
-import { supabaseAdmin as supabase } from "@/lib/supabase";
+import type { Metadata } from "next";
+import { ArrowLeftRight } from "lucide-react";
+import { redirect } from "next/navigation";
+import { getLedger } from "@/lib/data";
+import { ledgerSearchParams, parseLedgerFilters } from "@/lib/filters";
+import type { SearchParams } from "@/lib/types";
 import { DataTable } from "@/components/dashboard/DataTable";
 
-export const revalidate = 0; // Dynamic rendering for search/sort
+export const revalidate = 0;
+export const metadata: Metadata = { title: "Transactions" };
 
-interface TransactionsPageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
-
-export default async function TransactionsPage({ searchParams }: TransactionsPageProps) {
-  const resolvedParams = await searchParams;
-  
-  const page = Number(resolvedParams.page) || 1;
-  const pageSize = 10;
-  const sortBy = (resolvedParams.sortBy as string) || "created_at";
-  const order = (resolvedParams.order as string) || "desc";
-  const query = (resolvedParams.q as string) || "";
-
-  // Pagination bounds
-  const from = (page - 1) * pageSize;
-  const to = from + pageSize - 1;
-
-  // Build Supabase Query
-  let dbQuery = supabase
-    .from("transactions")
-    .select(`
-      id,
-      amount,
-      status,
-      created_at,
-      users!inner (
-        name,
-        email
-      )
-    `, { count: "exact" });
-
-  // Apply Search Filter (transactions ID or user name)
-  if (query) {
-    // Note: To search across tables in Supabase with foreign keys, 
-    // it requires embedding the filter inside the inner join.
-    // For simplicity, we search by user name here. 
-    // If querying UUID requires valid format, we avoid crashing by only searching name.
-    dbQuery = dbQuery.ilike("users.name", `%${query}%`);
+export default async function TransactionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const params = await searchParams;
+  const filters = parseLedgerFilters(params);
+  const result = await getLedger(filters);
+  const canonical = ledgerSearchParams({ ...filters, page: result.page });
+  const incoming = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (typeof value === "string") incoming.set(key, value);
+    else if (Array.isArray(value))
+      value.forEach((item) => incoming.append(key, item));
   }
-
-  // Apply Sorting
-  // For sorting by nested user fields, we'd need RPC, but for native fields:
-  dbQuery = dbQuery.order(sortBy, { ascending: order === "asc" });
-
-  // Apply Pagination
-  dbQuery = dbQuery.range(from, to);
-
-  const { data, count, error } = await dbQuery;
-
-  if (error) {
-    console.error("Error fetching transactions:", error);
-    // You could return a custom error UI here
-  }
-
-  // Cast the data, Supabase types might complain about the inner join array if not generated
-  const formattedData = (data || []).map(tx => ({
-    ...tx,
-    users: Array.isArray(tx.users) ? tx.users[0] : tx.users
-  })) as any[];
-
+  if (incoming.toString() !== canonical)
+    redirect(`/transactions${canonical ? `?${canonical}` : ""}`);
   return (
-    <div className="flex flex-col gap-6 p-6 sm:p-8">
-      {/* Header */}
-      <div>
-        <h1 className="font-space-grotesk text-3xl font-bold tracking-tight text-white uppercase">
-          Ledger
-        </h1>
-        <p className="text-zinc-400 mt-1">
-          Complete history of all platform transactions.
-        </p>
+    <div className="page-container">
+      <div className="page-heading">
+        <div>
+          <p className="eyebrow mb-3">WORKSPACE / TRANSACTIONS</p>
+          <h1>
+            Every movement, accounted for
+            <span className="text-[#58e0ce]">.</span>
+          </h1>
+          <p className="page-description">
+            Find a payment, follow up on a collection, or export the current
+            page.
+          </p>
+        </div>
+        <div className="date-pill">
+          <ArrowLeftRight
+            className="size-4 text-[#58e0ce]"
+            aria-hidden="true"
+          />
+          Transaction ledger
+        </div>
       </div>
-
-      <Suspense fallback={<div className="h-96 flex items-center justify-center text-white">Loading table...</div>}>
-        <DataTable 
-          data={formattedData} 
-          totalCount={count || 0} 
-          pageSize={pageSize} 
-        />
-      </Suspense>
+      <div className="source-note">
+        <span className="source-dot" aria-hidden="true" />
+        <span>Local SQLite · synthetic transactions</span>
+        <span className="sm:ml-auto">Amounts in USD · Dates in UTC</span>
+      </div>
+      <DataTable key={canonical} result={result} filters={filters} />
+      <p className="page-footnote">
+        Search matches transaction IDs, customer names, and email addresses. CSV
+        export includes only the rows on the current page.
+      </p>
     </div>
   );
 }
